@@ -58,7 +58,7 @@ The `semantics/` directory provides the formal semantic framework for representi
 - **RDF Vocabulary** (`ontology/vocab.ttl`): Formal ontology with 8 core classes (e.g., `waa:AuditRun`, `waa:Finding`, `waa:Criterion`) and 40+ properties.
 - **SHACL Constraints** (`ontology/shapes.ttl`): Declarative validation rules (C1-C12) ensuring structural integrity.
 - **JSON-LD Context** (`ontology/context.jsonld`): Interoperability mapping for JSON serialization.
-- **SPARQL Queries** (`queries/`): Competency questions for count findings (`q1.rq`), evidence filtering (`q2.rq`), provenance tracing (`q3.rq`), and more.
+- **SPARQL Queries** (`queries/`): Five competency questions demonstrating practical utility (cross-run regression detection, visual evidence distribution, provenance tracing, spatial clustering, recommendation retrieval), plus additional utility queries.
 
 **Validation Workflow:**
 You can validate the provided examples using `pyshacl`:

@@ -1,6 +1,10 @@
 # ============================================================
-# SPARQL Query 1: Count Fail Findings by Criterion
+# SPARQL Query 1 (BONUS): Count Fail Findings by Criterion
 # ============================================================
+# NOTE: This is an additional utility query not described in the paper.
+# The five competency questions in the paper correspond to queries
+# q2, q3, q4, q5, and q6.
+#
 # Competency Question: How many failed findings exist for each 
 # WCAG criterion across all audit runs?
 #
