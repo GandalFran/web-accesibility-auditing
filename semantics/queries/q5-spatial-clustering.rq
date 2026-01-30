@@ -1,0 +1,44 @@
+# ============================================================
+# SPARQL Query 5: Spatial Clustering - Navigation Region Findings
+# ============================================================
+# Competency Question: Which findings target visual regions in the
+# navigation area (top 100px of viewport)?
+#
+# Use Case: Prioritize remediation of high-visibility interface
+# regions that users encounter first. Enable spatial heatmaps.
+
+PREFIX waa: <https://bisite.usal.es/ontologies/web-accessibility-audit#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT ?finding ?criterionId ?status ?targetSelector ?bbox ?yCoord
+WHERE {
+    ?finding a waa:Finding ;
+             waa:criterion ?criterion ;
+             waa:target ?target ;
+             waa:status ?status ;
+             waa:evidence ?evidenceBBox .
+    
+    ?criterion dcterms:identifier ?criterionId .
+    ?target waa:domSelector ?targetSelector .
+    
+    # BBox evidence with spatial coordinates
+    ?evidenceBBox a waa:BBoxEvidence ;
+                  waa:bbox ?bbox .
+    
+    # Parse Y coordinate from bbox string (x,y,width,height)
+    # Note: This simplified version assumes bbox format "x,y,w,h"
+    # In production, use string manipulation or filter on numeric Y values
+    BIND(xsd:integer(REPLACE(?bbox, "^[^,]+,([^,]+),.+$", "$1")) AS ?yCoord)
+    
+    # Filter: Y coordinate < 100px (navigation/header region)
+    FILTER(?yCoord < 100)
+}
+ORDER BY ?yCoord ?criterionId
+
+# Expected Results (based on examples):
+# - Finding F-002: y=80 (hero section at top, though slightly below 100px in reality)
+#
+# Note: For robust spatial filtering, bbox should be stored as 
+# structured data (separate x, y, width, height properties) or
+# evidence should link to spatial annotation resources.

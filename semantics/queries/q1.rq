@@ -1,0 +1,30 @@
+# ============================================================
+# SPARQL Query 1: Count Fail Findings by Criterion
+# ============================================================
+# Competency Question: How many failed findings exist for each 
+# WCAG criterion across all audit runs?
+#
+# Use Case: Generate summary statistics for accessibility audit
+# campaigns to identify which criteria are most frequently violated.
+
+PREFIX waa: <https://bisite.usal.es/ontologies/web-accessibility-audit#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+
+SELECT ?criterionId ?criterionLabel (COUNT(?finding) AS ?failCount)
+WHERE {
+    ?finding a waa:Finding ;
+             waa:status waa:Fail ;
+             waa:criterion ?criterion .
+    
+    ?criterion dcterms:identifier ?criterionId .
+    
+    OPTIONAL {
+        ?criterion skos:prefLabel ?criterionLabel .
+    }
+}
+GROUP BY ?criterionId ?criterionLabel
+ORDER BY DESC(?failCount)
+
+# Expected Results (based on examples):
+# - WCAG2.2:1.4.3, "Contrast (Minimum)", 1
+# - WCAG2.2:1.1.1, "Non-text Content", 0 (example has NeedsReview, not Fail)

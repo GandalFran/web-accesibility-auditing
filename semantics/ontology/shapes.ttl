@@ -1,0 +1,329 @@
+@prefix waash: <https://bisite.usal.es/ontologies/web-accessibility-audit/shapes#> .
+@prefix waa: <https://bisite.usal.es/ontologies/web-accessibility-audit#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+# ============================================================
+# SHACL Shapes for Web Accessibility Audit Vocabulary
+# Constraint Profile C1-C12
+# ============================================================
+
+# Constraint Mapping:
+# C1: Finding must have exactly 1 criterion
+# C2: Finding must have exactly 1 target
+# C3: Finding must have at least 1 evidence
+# C4: status must be in enum {Pass, Fail, NeedsReview, NotApplicable}
+# C5: confidence if present must be decimal between 0 and 1
+# C6: AuditRun must have auditedResource and runTimestamp
+# C7: Evidence must have evidenceType and prov:wasDerivedFrom
+# C8: If evidenceType is ScreenshotEvidence then screenshot must exist
+# C9: If criterion is visual (e.g., 1.4.3) then Target must have visualRegion and Evidence must include bbox or screenshot
+# C10: Criterion identifier must match pattern WCAG2(.d)?:d.d.d
+# C11: AuditRun must link to provenance bundle entity
+# C12: ModelInvocation must have prompt, modelName, and output
+
+# ============================================================
+# Finding Shape (C1, C2, C3, C4, C5)
+# ============================================================
+
+waash:FindingShape a sh:NodeShape ;
+    sh:targetClass waa:Finding ;
+    sh:name "Accessibility Finding Shape" ;
+    sh:description "Validates that findings have required criterion, target, evidence, and status." ;
+    
+    # C1: Must have exactly 1 criterion
+    sh:property [
+        sh:path waa:criterion ;
+        sh:class waa:Criterion ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "C1 violation: Finding must have exactly one criterion reference." ;
+    ] ;
+    
+    # C2: Must have exactly 1 target
+    sh:property [
+        sh:path waa:target ;
+        sh:class waa:Target ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "C2 violation: Finding must have exactly one target reference." ;
+    ] ;
+    
+    # C3: Must have at least 1 evidence
+    sh:property [
+        sh:path waa:evidence ;
+        sh:class waa:Evidence ;
+        sh:minCount 1 ;
+        sh:message "C3 violation: Finding must have at least one evidence entity." ;
+    ] ;
+    
+    # C4: status must be in enum
+    sh:property [
+        sh:path waa:status ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:in ( waa:Pass waa:Fail waa:NeedsReview waa:NotApplicable ) ;
+        sh:message "C4 violation: status must be one of {Pass, Fail, NeedsReview, NotApplicable}." ;
+    ] ;
+    
+    # C5: confidence if present must be between 0 and 1
+    sh:property [
+        sh:path waa:confidence ;
+        sh:datatype xsd:decimal ;
+        sh:minInclusive 0.0 ;
+        sh:maxInclusive 1.0 ;
+        sh:message "C5 violation: confidence must be a decimal between 0.0 and 1.0." ;
+    ] .
+
+# ============================================================
+# AuditRun Shape (C6, C11)
+# ============================================================
+
+waash:AuditRunShape a sh:NodeShape ;
+    sh:targetClass waa:AuditRun ;
+    sh:name "Audit Run Shape" ;
+    sh:description "Validates audit run structure and provenance." ;
+    
+    # C6: Must have auditedResource
+    sh:property [
+        sh:path waa:auditedResource ;
+        sh:class waa:WebResource ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "C6 violation: AuditRun must have exactly one auditedResource." ;
+    ] ;
+    
+    # C6: Must have runTimestamp
+    sh:property [
+        sh:path waa:runTimestamp ;
+        sh:datatype xsd:dateTime ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "C6 violation: AuditRun must have exactly one runTimestamp." ;
+    ] ;
+    
+    # C11: Must link to provenance bundle
+    sh:property [
+        sh:path waa:hasProvenanceBundle ;
+        sh:or (
+            [ sh:class prov:Entity ]
+            [ sh:class prov:Bundle ]
+        ) ;
+        sh:minCount 1 ;
+        sh:message "C11 violation: AuditRun must link to a provenance bundle entity." ;
+    ] .
+
+# ============================================================
+# Evidence Shape (C7, C8)
+# ============================================================
+
+waash:EvidenceShape a sh:NodeShape ;
+    sh:targetClass waa:Evidence ;
+    sh:name "Evidence Shape" ;
+    sh:description "Validates evidence structure and type-specific requirements." ;
+    
+    # C7: Must have evidenceType
+    sh:property [
+        sh:path rdf:type ;
+        sh:minCount 1 ;
+        sh:message "C7 violation: Evidence must have an explicit type (ScreenshotEvidence, BBoxEvidence, etc.)." ;
+    ] ;
+    
+    # C7: Must have prov:wasDerivedFrom
+    sh:property [
+        sh:path prov:wasDerivedFrom ;
+        sh:class prov:Entity ;
+        sh:minCount 1 ;
+        sh:message "C7 violation: Evidence must have at least one prov:wasDerivedFrom link to source entity." ;
+    ] .
+
+# C8: Screenshot evidence must have screenshot property
+waash:ScreenshotEvidenceShape a sh:NodeShape ;
+    sh:targetClass waa:ScreenshotEvidence ;
+    sh:name "Screenshot Evidence Shape" ;
+    sh:description "Validates screenshot evidence has required screenshot link." ;
+    
+    sh:property [
+        sh:path waa:screenshot ;
+        sh:class prov:Entity ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "C8 violation: ScreenshotEvidence must have exactly one screenshot reference." ;
+    ] .
+
+# ============================================================
+# Criterion Shape (C10)
+# ============================================================
+
+waash:CriterionShape a sh:NodeShape ;
+    sh:targetClass waa:Criterion ;
+    sh:name "Criterion Shape" ;
+    sh:description "Validates WCAG criterion identifier format." ;
+    
+    # C10: Identifier must match WCAG pattern
+    sh:property [
+        sh:path dcterms:identifier ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:pattern "^WCAG2(\\.\\d)?:\\d\\.\\d\\.\\d$" ;
+        sh:message "C10 violation: Criterion identifier must match pattern 'WCAG2(.d)?:d.d.d' (e.g., WCAG2.2:1.4.3)." ;
+    ] .
+
+# ============================================================
+# Target Shape (C9 - Visual Criteria Requirement)
+# ============================================================
+
+waash:TargetShape a sh:NodeShape ;
+    sh:targetClass waa:Target ;
+    sh:name "Target Shape" ;
+    sh:description "Validates target anchoring (DOM + visual for visual criteria)." ;
+    
+    # Must have domSelector
+    sh:property [
+        sh:path waa:domSelector ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "Target must have exactly one DOM selector (CSS/XPath)." ;
+    ] .
+
+# C9: Visual criteria targets must have visual region
+# Note: This is a simplified version. Full implementation would require
+# SPARQL-based constraint checking the criterion identifier of the finding.
+# For demonstration, we create a separate shape for targets of visual findings.
+
+waash:VisualTargetShape a sh:NodeShape ;
+    sh:name "Visual Target Shape" ;
+    sh:description "For findings targeting visual criteria (1.4.3, 1.4.6, 1.4.11), target must have visualRegion." ;
+    
+    # This would ideally be triggered conditionally based on the criterion
+    # In practice, implement via SPARQL constraint or application logic
+    sh:property [
+        sh:path waa:visualRegion ;
+        sh:class waa:BBoxEvidence ;
+        sh:minCount 1 ;
+        sh:message "C9 violation: Target for visual criterion must have visualRegion with bounding box." ;
+    ] .
+
+# ============================================================
+# ModelInvocation Shape (C12)
+# ============================================================
+
+waash:ModelInvocationShape a sh:NodeShape ;
+    sh:targetClass waa:ModelInvocation ;
+    sh:name "Model Invocation Shape" ;
+    sh:description "Validates model invocation provenance metadata." ;
+    
+    # C12: Must have modelName
+    sh:property [
+        sh:path waa:modelName ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "C12 violation: ModelInvocation must have exactly one modelName." ;
+    ] ;
+    
+    # C12: Must have prompt
+    sh:property [
+        sh:path waa:prompt ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:message "C12 violation: ModelInvocation must have a prompt." ;
+    ] ;
+    
+    # C12: Must have output
+    sh:property [
+        sh:path waa:output ;
+        sh:class prov:Entity ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "C12 violation: ModelInvocation must link to exactly one output entity." ;
+    ] .
+
+# ============================================================
+# Advanced Constraint: Visual Evidence for Visual Criteria
+# ============================================================
+
+# This SPARQL-based constraint checks C9 more thoroughly:
+# If a Finding references criterion 1.4.3 (or other visual criteria),
+# then its evidence must include screenshot or bbox.
+
+waash:VisualEvidenceConstraint a sh:NodeShape ;
+    sh:targetClass waa:Finding ;
+    sh:name "Visual Evidence Constraint" ;
+    sh:description "Findings for visual criteria must have visual evidence." ;
+    
+    sh:sparql [
+        sh:message "C9 violation: Finding for visual criterion (1.4.3, 1.4.6, 1.4.11) must have visual evidence (screenshot or bbox)." ;
+        sh:select """
+            PREFIX waa: <https://example.org/audit#>
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+            
+            SELECT $this
+            WHERE {
+                $this a waa:Finding .
+                $this waa:criterion ?criterion .
+                ?criterion dcterms:identifier ?criterionId .
+                FILTER (REGEX(STR(?criterionId), "1\\\\.4\\\\.[3-9]") || REGEX(STR(?criterionId), "1\\\\.4\\\\.1[01]"))
+                FILTER NOT EXISTS {
+                    $this waa:evidence ?evidence .
+                    ?evidence a ?evidenceType .
+                    FILTER (?evidenceType IN (waa:ScreenshotEvidence, waa:BBoxEvidence))
+                }
+            }
+        """ ;
+    ] .
+
+# ============================================================
+# Consistency Constraint: Timestamps
+# ============================================================
+
+waash:TimestampConsistencyShape a sh:NodeShape ;
+    sh:targetClass waa:AuditRun ;
+    sh:name "Timestamp Consistency Shape" ;
+    sh:description "Validates temporal ordering within audit run." ;
+    
+    # Note: Full temporal validation (capture ≤ inference ≤ validation)
+    # requires application-level checks or more complex SPARQL constraints
+    
+    sh:property [
+        sh:path waa:runTimestamp ;
+        sh:lessThanOrEquals prov:endedAtTime ;
+        sh:message "AuditRun timestamp should not be after activity end time." ;
+    ] .
+
+# ============================================================
+# Completeness Constraint: Failed Findings Must Have Evidence
+# ============================================================
+
+waash:FailedFindingEvidenceConstraint a sh:NodeShape ;
+    sh:targetClass waa:Finding ;
+    sh:name "Failed Finding Evidence Constraint" ;
+    sh:description "Failed findings must provide detailed evidence." ;
+    
+    sh:sparql [
+        sh:message "C5 (consistency) violation: Finding with status=Fail must have at least one evidence entity with non-empty excerpt or screenshot." ;
+        sh:select """
+            PREFIX waa: <https://example.org/audit#>
+            
+            SELECT $this
+            WHERE {
+                $this waa:status waa:Fail .
+                
+                FILTER NOT EXISTS {
+                    $this waa:evidence ?evidence .
+                    {
+                        ?evidence waa:excerpt ?excerpt .
+                        FILTER (STRLEN(STR(?excerpt)) > 0)
+                    } UNION {
+                        ?evidence waa:screenshot ?screenshot .
+                    }
+                }
+            }
+        """ ;
+    ] .

@@ -1,0 +1,180 @@
+{
+  "@context": {
+    "waa": "https://bisite.usal.es/ontologies/web-accessibility-audit#",
+    "prov": "http://www.w3.org/ns/prov#",
+    "oa": "http://www.w3.org/ns/oa#",
+    "dcterms": "http://purl.org/dc/terms/",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "schema": "http://schema.org/",
+    
+    "AuditRun": "waa:AuditRun",
+    "Finding": "waa:Finding",
+    "Criterion": "waa:Criterion",
+    "Target": "waa:Target",
+    "Evidence": "waa:Evidence",
+    "Recommendation": "waa:Recommendation",
+    "WebResource": "waa:WebResource",
+    "ModelInvocation": "waa:ModelInvocation",
+    "PageState": "waa:PageState",
+    
+    "ScreenshotEvidence": "waa:ScreenshotEvidence",
+    "BBoxEvidence": "waa:BBoxEvidence",
+    "DomSnippetEvidence": "waa:DomSnippetEvidence",
+    "TextEvidence": "waa:TextEvidence",
+    
+    "Pass": "waa:Pass",
+    "Fail": "waa:Fail",
+    "NeedsReview": "waa:NeedsReview",
+    "NotApplicable": "waa:NotApplicable",
+    
+    "auditedResource": {
+      "@id": "waa:auditedResource",
+      "@type": "@id"
+    },
+    "hasFinding": {
+      "@id": "waa:hasFinding",
+      "@type": "@id"
+    },
+    "runTimestamp": {
+      "@id": "waa:runTimestamp",
+      "@type": "xsd:dateTime"
+    },
+    "toolchain": "waa:toolchain",
+    "hasProvenanceBundle": {
+      "@id": "waa:hasProvenanceBundle",
+      "@type": "@id"
+    },
+    "pageState": {
+      "@id": "waa:pageState",
+      "@type": "@id"
+    },
+    
+    "criterion": {
+      "@id": "waa:criterion",
+      "@type": "@id"
+    },
+    "target": {
+      "@id": "waa:target",
+      "@type": "@id"
+    },
+    "status": {
+      "@id": "waa:status",
+      "@type": "@id"
+    },
+    "confidence": {
+      "@id": "waa:confidence",
+      "@type": "xsd:decimal"
+    },
+    "evidence": {
+      "@id": "waa:evidence",
+      "@type": "@id"
+    },
+    "recommendation": {
+      "@id": "waa:recommendation",
+      "@type": "@id"
+    },
+    "severity": "waa:severity",
+    
+    "identifier": "dcterms:identifier",
+    "source": {
+      "@id": "dcterms:source",
+      "@type": "@id"
+    },
+    "title": "dcterms:title",
+    "description": "dcterms:description",
+    "created": {
+      "@id": "dcterms:created",
+      "@type": "xsd:dateTime"
+    },
+    "prefLabel": "skos:prefLabel",
+    "definition": "skos:definition",
+    
+    "domSelector": "waa:domSelector",
+    "domNodeFingerprint": "waa:domNodeFingerprint",
+    "visualRegion": {
+      "@id": "waa:visualRegion",
+      "@type": "@id"
+    },
+    "domSnapshot": {
+      "@id": "waa:domSnapshot",
+      "@type": "@id"
+    },
+    
+    "evidenceType": {
+      "@id": "waa:evidenceType",
+      "@type": "@id"
+    },
+    "screenshot": {
+      "@id": "waa:screenshot",
+      "@type": "@id"
+    },
+    "bbox": "waa:bbox",
+    "excerpt": "waa:excerpt",
+    
+    "fixExample": "waa:fixExample",
+    
+    "modelName": "waa:modelName",
+    "modelVersion": "waa:modelVersion",
+    "prompt": "waa:prompt",
+    "temperature": {
+      "@id": "waa:temperature",
+      "@type": "xsd:decimal"
+    },
+    "topP": {
+      "@id": "waa:topP",
+      "@type": "xsd:decimal"
+    },
+    "seed": {
+      "@id": "waa:seed",
+      "@type": "xsd:integer"
+    },
+    "output": {
+      "@id": "waa:output",
+      "@type": "@id"
+    },
+    
+    "screenshotHash": "waa:screenshotHash",
+    "viewportWidth": {
+      "@id": "waa:viewportWidth",
+      "@type": "xsd:integer"
+    },
+    "viewportHeight": {
+      "@id": "waa:viewportHeight",
+      "@type": "xsd:integer"
+    },
+    "hydrationTimestamp": {
+      "@id": "waa:hydrationTimestamp",
+      "@type": "xsd:dateTime"
+    },
+    
+    "wasGeneratedBy": {
+      "@id": "prov:wasGeneratedBy",
+      "@type": "@id"
+    },
+    "used": {
+      "@id": "prov:used",
+      "@type": "@id"
+    },
+    "wasAssociatedWith": {
+      "@id": "prov:wasAssociatedWith",
+      "@type": "@id"
+    },
+    "wasDerivedFrom": {
+      "@id": "prov:wasDerivedFrom",
+      "@type": "@id"
+    },
+    "startedAtTime": {
+      "@id": "prov:startedAtTime",
+      "@type": "xsd:dateTime"
+    },
+    "endedAtTime": {
+      "@id": "prov:endedAtTime",
+      "@type": "xsd:dateTime"
+    },
+    
+    "Agent": "prov:Agent",
+    "Activity": "prov:Activity",
+    "Entity": "prov:Entity"
+  }
+}

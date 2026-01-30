@@ -1,0 +1,95 @@
+@prefix waa: <https://bisite.usal.es/ontologies/web-accessibility-audit#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+# ============================================================
+# Example 3: INVALID Audit Run - Violates Multiple Constraints
+# ============================================================
+# This example intentionally violates constraints C1, C5, C8, C10, C11
+# to demonstrate SHACL validation detection of malformed data.
+
+# Web Resource
+<https://bisite.usal.es/audit/resource/page-003> a waa:WebResource ;
+    dcterms:identifier "https://example-invalid.com/test" ;
+    dcterms:title "Invalid Example Page" .
+
+# Page State
+<https://bisite.usal.es/audit/pagestate/ps-003> a waa:PageState ;
+    waa:screenshotHash "sha256:invalid123" ;
+    waa:viewportWidth 1920 ;
+    waa:viewportHeight 1080 .
+
+# Screenshot (used later)
+<https://bisite.usal.es/audit/screenshot/sc-003> a prov:Entity ;
+    dcterms:format "image/png" ;
+    dcterms:created "2026-01-29T12:00:00Z"^^xsd:dateTime .
+
+# VIOLATION C11: Missing provenance bundle
+# VIOLATION C6: Missing runTimestamp
+<https://bisite.usal.es/audit/run/AR-003-invalid> a waa:AuditRun ;
+    waa:auditedResource <https://bisite.usal.es/audit/resource/page-003> ;
+    # runTimestamp missing (C6 violation)
+    waa:toolchain "WCAG-VLM-v1.0" ;
+    waa:pageState <https://bisite.usal.es/audit/pagestate/ps-003> ;
+    # hasProvenanceBundle missing (C11 violation)
+    waa:hasFinding <https://bisite.usal.es/audit/finding/F-003-invalid> ;
+    prov:startedAtTime "2026-01-29T12:00:00Z"^^xsd:dateTime .
+
+# VIOLATION C10: Invalid criterion identifier format
+<https://bisite.usal.es/audit/criterion/INVALID-CRITERION> a waa:Criterion ;
+    dcterms:identifier "InvalidFormat:1.4.3" ;  # Does not match WCAG2(.d)?:d.d.d pattern
+    skos:prefLabel "Invalid Criterion" .
+
+# VIOLATION C1: Missing criterion reference
+# VIOLATION C4: Invalid status value
+# VIOLATION C5: confidence > 1.0
+<https://bisite.usal.es/audit/finding/F-003-invalid> a waa:Finding ;
+    # waa:criterion MISSING (C1 violation)
+    waa:target <https://bisite.usal.es/audit/target/T-003> ;
+    waa:status <https://bisite.usal.es/ontologies/web-accessibility-audit#InvalidStatus> ;  # Not in enum (C4 violation)
+    waa:confidence 1.4 ;  # > 1.0 (C5 violation)
+    waa:evidence <https://bisite.usal.es/audit/evidence/E-003-invalid> ;
+    dcterms:description "Invalid finding for testing SHACL validation" .
+
+# Target (valid)
+<https://bisite.usal.es/audit/target/T-003> a waa:Target ;
+    waa:domSelector "div.invalid-test" ;
+    waa:visualRegion <https://bisite.usal.es/audit/evidence/E-003-bbox> .
+
+# VIOLATION C8: ScreenshotEvidence without screenshot property
+<https://bisite.usal.es/audit/evidence/E-003-invalid> a waa:ScreenshotEvidence ;
+    # waa:screenshot MISSING (C8 violation)
+    waa:excerpt "This screenshot evidence is missing the required screenshot link" ;
+    prov:wasDerivedFrom <https://bisite.usal.es/audit/screenshot/sc-003> .
+
+# Valid bbox for reference
+<https://bisite.usal.es/audit/evidence/E-003-bbox> a waa:BBoxEvidence ;
+    waa:bbox "100,200,300,400" ;
+    prov:wasDerivedFrom <https://bisite.usal.es/audit/screenshot/sc-003> .
+
+# VIOLATION C12: ModelInvocation missing required fields
+<https://bisite.usal.es/audit/activity/inference-003-invalid> a waa:ModelInvocation ;
+    # waa:modelName MISSING (C12 violation)
+    # waa:prompt MISSING (C12 violation)
+    waa:temperature 0.2 ;
+    # waa:output MISSING (C12 violation)
+    prov:used <https://bisite.usal.es/audit/screenshot/sc-003> .
+
+# Additional violation: Finding referencing criterion with invalid format
+<https://bisite.usal.es/audit/finding/F-004-invalid-criterion> a waa:Finding ;
+    waa:criterion <https://bisite.usal.es/audit/criterion/INVALID-CRITERION> ;  # References C10-violating criterion
+    waa:target <https://bisite.usal.es/audit/target/T-003> ;
+    waa:status waa:Fail ;
+    waa:evidence <https://bisite.usal.es/audit/evidence/E-003-bbox> .
+
+# Summary of constraint violations in this file:
+# - C1: Finding F-003-invalid missing criterion
+# - C4: Finding F-003-invalid has invalid status
+# - C5: Finding F-003-invalid has confidence = 1.4 (> 1.0)
+# - C6: AuditRun AR-003-invalid missing runTimestamp
+# - C8: Evidence E-003-invalid (ScreenshotEvidence) missing screenshot
+# - C10: Criterion INVALID-CRITERION has invalid identifier format
+# - C11: AuditRun AR-003-invalid missing hasProvenanceBundle
+# - C12: ModelInvocation inference-003-invalid missing modelName, prompt, output

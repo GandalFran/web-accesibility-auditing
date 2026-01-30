@@ -1,0 +1,48 @@
+# ============================================================
+# SPARQL Query 2: Findings with Both Screenshot and BBox Evidence
+# ============================================================
+# Competency Question: Which findings include both visual screenshot 
+# evidence AND spatial bounding box coordinates?
+#
+# Use Case: Identify findings with complete visual-spatial anchoring,
+# enabling UI overlays, regression tracking, and visual verification.
+
+PREFIX waa: <https://bisite.usal.es/ontologies/web-accessibility-audit#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT ?finding ?criterionId ?targetSelector ?bbox ?screenshotUri ?confidence
+WHERE {
+    # Finding with both evidence types
+    ?finding a waa:Finding ;
+             waa:criterion ?criterion ;
+             waa:target ?target ;
+             waa:evidence ?evidenceBBox ;
+             waa:evidence ?evidenceScreenshot .
+    
+    # BBox evidence
+    ?evidenceBBox a waa:BBoxEvidence ;
+                  waa:bbox ?bbox .
+    
+    # Screenshot evidence
+    ?evidenceScreenshot a waa:ScreenshotEvidence ;
+                        waa:screenshot ?screenshot .
+    
+    ?screenshot dcterms:identifier ?screenshotUri .
+    
+    # Target details
+    ?target waa:domSelector ?targetSelector .
+    
+    # Criterion identifier
+    ?criterion dcterms:identifier ?criterionId .
+    
+    # Optional confidence score
+    OPTIONAL {
+        ?finding waa:confidence ?confidence .
+    }
+}
+ORDER BY ?criterionId ?targetSelector
+
+# Expected Results (based on examples):
+# - Finding F-001: WCAG2.2:1.4.3, button#submit-button, bbox="1420,850,180,45", confidence=0.86
+# - Finding F-002: WCAG2.2:1.1.1, section.hero > img.background-image, bbox="0,80,1920,600", confidence=0.62

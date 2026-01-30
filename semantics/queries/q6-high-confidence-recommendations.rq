@@ -1,0 +1,43 @@
+# ============================================================
+# SPARQL Query 6: High-Confidence Recommendations
+# ============================================================
+# Competency Question: Retrieve actionable recommendations for
+# findings with confidence scores above a threshold.
+#
+# Use Case: Generate developer-facing remediation reports focused
+# on high-certainty issues, filtering out low-confidence flags.
+
+PREFIX waa: <https://bisite.usal.es/ontologies/web-accessibility-audit#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT ?criterionId ?targetSelector ?confidence ?status ?recommendation ?fixExample
+WHERE {
+    ?finding a waa:Finding ;
+             waa:criterion ?criterion ;
+             waa:target ?target ;
+             waa:confidence ?confidence ;
+             waa:status ?status ;
+             waa:recommendation ?rec .
+    
+    ?criterion dcterms:identifier ?criterionId .
+    ?target waa:domSelector ?targetSelector .
+    
+    ?rec dcterms:description ?recommendation .
+    
+    OPTIONAL {
+        ?rec waa:fixExample ?fixExample .
+    }
+    
+    # Filter: Confidence > 0.8
+    FILTER(?confidence > 0.8)
+    
+    # Filter: Only actionable statuses (Fail or NeedsReview)
+    FILTER(?status IN (waa:Fail, waa:NeedsReview))
+}
+ORDER BY DESC(?confidence) ?criterionId
+
+# Expected Results (based on examples):
+# - WCAG2.2:1.4.3, button#submit-button, confidence=0.86,
+#   Recommendation: "Increase contrast ratio to at least 4.5:1...",
+#   Fix: "button#submit-button { color: #333333; }"

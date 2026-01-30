@@ -1,0 +1,53 @@
+# ============================================================
+# SPARQL Query 4: Cross-Run Regression Detection
+# ============================================================
+# Competency Question: Which targets changed their accessibility 
+# status (Pass/Fail) between two audit runs?
+#
+# Use Case: Detect when code changes reintroduce accessibility
+# barriers previously fixed (regressions) or when fixes successfully
+# remediate known issues (progressions).
+
+PREFIX waa: <https://bisite.usal.es/ontologies/web-accessibility-audit#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+
+SELECT ?targetSelector ?criterionId 
+       ?run1Id ?status1 ?run1Time
+       ?run2Id ?status2 ?run2Time
+WHERE {
+    # Finding in first run
+    ?run1 a waa:AuditRun ;
+          dcterms:identifier ?run1Id ;
+          waa:runTimestamp ?run1Time ;
+          waa:hasFinding ?finding1 .
+    
+    ?finding1 waa:criterion ?criterion ;
+              waa:target ?target1 ;
+              waa:status ?status1 .
+    
+    ?target1 waa:domSelector ?targetSelector .
+    ?criterion dcterms:identifier ?criterionId .
+    
+    # Finding in second run (same target, same criterion)
+    ?run2 a waa:AuditRun ;
+          dcterms:identifier ?run2Id ;
+          waa:runTimestamp ?run2Time ;
+          waa:hasFinding ?finding2 .
+    
+    ?finding2 waa:criterion ?criterion ;
+              waa:target ?target2 ;
+              waa:status ?status2 .
+    
+    ?target2 waa:domSelector ?targetSelector .
+    
+    # Filter: different runs, different statuses (changed)
+    FILTER(?run1 != ?run2)
+    FILTER(?status1 != ?status2)
+    FILTER(?run1Time < ?run2Time)  # Temporal ordering
+}
+ORDER BY ?targetSelector ?run1Time
+
+# Use Case Example:
+# Input: Two audit runs of the same page at different times
+# Output: button#submit-button for criterion 1.4.3 changed from Pass to Fail
+# → Regression detected: contrast issue reintroduced

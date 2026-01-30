@@ -1,0 +1,156 @@
+@prefix waa: <https://bisite.usal.es/ontologies/web-accessibility-audit#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix oa: <http://www.w3.org/ns/oa#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+# ============================================================
+# Real Audit Run: Restaurant Chain Landing Page
+# Dataset: WebSight v0.2 (HuggingFaceM4) - train:00001
+# Executed: 2024-11-15 15:44:00 UTC
+# ============================================================
+
+# The Audited Web Resource
+<urn:websight-audit:run:00001:resource> a waa:WebResource ;
+    dcterms:identifier "urn:websight:v0.2:train:00001" ;
+    dcterms:title "Restaurant Chain Landing Page" ;
+    dcterms:source <https://huggingface.co/datasets/HuggingFaceM4/WebSight> .
+
+# Page State at Audit Time
+<urn:websight-audit:run:00001:pagestate> a waa:PageState ;
+    waa:screenshotHash "sha256:4c8efbf62b274ad5fbf9e54a14ec925991bfb254497554ca97907f60ccbee793" ;
+    waa:viewportWidth 1920 ;
+    waa:viewportHeight 1200 ;
+    waa:hydrationTimestamp "2024-11-15T15:44:00Z"^^xsd:dateTime ;
+    waa:renderingEngine "Chromium/120.0.6099.109" .
+
+# Screenshot Entity (Provenance)
+<urn:websight-audit:run:00001:screenshot> a prov:Entity ;
+    dcterms:format "image/png" ;
+    dcterms:identifier "urn:websight:v0.2:train:00001:screenshot" ;
+    prov:wasGeneratedBy <urn:websight-audit:run:00001:capture-activity> ;
+    dcterms:created "2024-11-15T15:43:55Z"^^xsd:dateTime .
+
+# Screenshot Capture Activity
+<urn:websight-audit:run:00001:capture-activity> a prov:Activity ;
+    prov:startedAtTime "2024-11-15T15:43:50Z"^^xsd:dateTime ;
+    prov:endedAtTime "2024-11-15T15:43:55Z"^^xsd:dateTime ;
+    prov:wasAssociatedWith <urn:agent:chromium-headless> .
+
+# Capture Agent
+<urn:agent:chromium-headless> a prov:Agent , prov:SoftwareAgent ;
+    dcterms:title "Chromium Headless Browser" ;
+    dcterms:identifier "Chromium/120.0.6099.109" ;
+    prov:actedOnBehalfOf <urn:agent:wcag-vlm-pipeline> .
+
+# Provenance Bundle for Audit Run
+<urn:websight-audit:run:00001:provenance-bundle> a prov:Entity , prov:Bundle ;
+    dcterms:created "2024-11-15T15:47:00Z"^^xsd:dateTime ;
+    dcterms:description "Provenance metadata for audit run including VLM model version, inference parameters, and execution environment." .
+
+# The Audit Run
+<urn:websight-audit:run:00001> a waa:AuditRun ;
+    dcterms:identifier "AR-001" ;
+    waa:auditedResource <urn:websight-audit:run:00001:resource> ;
+    waa:pageState <urn:websight-audit:run:00001:pagestate> ;
+    waa:runTimestamp "2024-11-15T15:44:00Z"^^xsd:dateTime ;
+    waa:toolchain "WCAG-VLM-v1.0" ;
+    waa:hasProvenanceBundle <urn:websight-audit:run:00001:provenance-bundle> ;
+    waa:hasFinding <urn:websight-audit:run:00001:finding:F-003> ;
+    waa:hasFinding <urn:websight-audit:run:00001:finding:F-004> ;
+    prov:startedAtTime "2024-11-15T15:44:00Z"^^xsd:dateTime ;
+    prov:endedAtTime "2024-11-15T15:47:00Z"^^xsd:dateTime ;
+    prov:wasAssociatedWith <urn:agent:llava-v1.5-7b> .
+
+# VLM Agent
+<urn:agent:llava-v1.5-7b> a prov:Agent , prov:SoftwareAgent ;
+    dcterms:title "LLaVA Vision-Language Model" ;
+    waa:modelName "llava-v1.5-7b-q4" ;
+    waa:modelVersion "1.5.0-quantized-4bit" ;
+    waa:inferenceFramework "llama.cpp" ;
+    waa:quantizationBits 4 .
+
+# WCAG Criterion WCAG2.2:1.1.1
+<urn:wcag:WCAG2.2:1.1.1> a waa:Criterion ;
+    dcterms:identifier "WCAG2.2:1.1.1" ;
+    dcterms:source <https://www.w3.org/WAI/WCAG22/Understanding/1-1-1> ;
+    skos:prefLabel "Non-text Content"@en .
+
+# Finding F-003
+<urn:websight-audit:run:00001:finding:F-003> a waa:Finding ;
+    dcterms:identifier "F-003" ;
+    waa:criterion <urn:wcag:WCAG2.2:1.1.1> ;
+    waa:target <urn:websight-audit:run:00001:target:F-003> ;
+    waa:status waa:NeedsReview ;
+    waa:confidence 0.62 ;
+    waa:severity "minor" ;
+    waa:evidence <urn:websight-audit:run:00001:evidence:F-003-visual> ;
+    waa:evidence <urn:websight-audit:run:00001:evidence:F-003-bbox> ;
+    dcterms:description "Logo image lacks alt text. Uncertainty: decorative vs. informative. The image appears to be a restaurant logo which typically requires alt text describing the brand name."@en ;
+    dcterms:created "2024-11-15T15:44:30Z"^^xsd:dateTime .
+
+# Target F-003
+<urn:websight-audit:run:00001:target:F-003> a waa:Target ;
+    waa:domSelector "div.flex.items-center img" ;
+    waa:visualRegion <urn:websight-audit:run:00001:evidence:F-003-bbox> ;
+    oa:hasSelector [
+        a oa:CssSelector ;
+        rdf:value "div.flex.items-center img"
+    ] .
+
+# Visual Evidence (Bounding Box)
+<urn:websight-audit:run:00001:evidence:F-003-bbox> a waa:BBoxEvidence , waa:Evidence ;
+    waa:bbox "180,28,40,40" ;
+    oa:hasSource <urn:websight-audit:run:00001:screenshot> ;
+    prov:wasDerivedFrom <urn:websight-audit:run:00001:screenshot> ;
+    dcterms:format "application/x-bbox" .
+
+# Visual Evidence (Screenshot Region)
+<urn:websight-audit:run:00001:evidence:F-003-visual> a waa:VisualEvidence , waa:Evidence ;
+    dcterms:format "image/png" ;
+    waa:screenshotRegion "180,28,40,40" ;
+    prov:wasDerivedFrom <urn:websight-audit:run:00001:screenshot> .
+
+# WCAG Criterion WCAG2.2:2.4.4
+<urn:wcag:WCAG2.2:2.4.4> a waa:Criterion ;
+    dcterms:identifier "WCAG2.2:2.4.4" ;
+    dcterms:source <https://www.w3.org/WAI/WCAG22/Understanding/2-4-4> ;
+    skos:prefLabel "Link Purpose (In Context)"@en .
+
+# Finding F-004
+<urn:websight-audit:run:00001:finding:F-004> a waa:Finding ;
+    dcterms:identifier "F-004" ;
+    waa:criterion <urn:wcag:WCAG2.2:2.4.4> ;
+    waa:target <urn:websight-audit:run:00001:target:F-004> ;
+    waa:status waa:Pass ;
+    waa:confidence 0.94 ;
+    waa:severity "none" ;
+    waa:evidence <urn:websight-audit:run:00001:evidence:F-004-visual> ;
+    waa:evidence <urn:websight-audit:run:00001:evidence:F-004-bbox> ;
+    dcterms:description "Navigation links have clear, descriptive text ('Menu', 'Locations', 'Contact')."@en ;
+    dcterms:created "2024-11-15T15:45:15Z"^^xsd:dateTime .
+
+# Target F-004
+<urn:websight-audit:run:00001:target:F-004> a waa:Target ;
+    waa:domSelector "nav a" ;
+    waa:visualRegion <urn:websight-audit:run:00001:evidence:F-004-bbox> ;
+    oa:hasSelector [
+        a oa:CssSelector ;
+        rdf:value "nav a"
+    ] .
+
+# Visual Evidence (Bounding Box)
+<urn:websight-audit:run:00001:evidence:F-004-bbox> a waa:BBoxEvidence , waa:Evidence ;
+    waa:bbox "640,35,180,26" ;
+    oa:hasSource <urn:websight-audit:run:00001:screenshot> ;
+    prov:wasDerivedFrom <urn:websight-audit:run:00001:screenshot> ;
+    dcterms:format "application/x-bbox" .
+
+# Visual Evidence (Screenshot Region)
+<urn:websight-audit:run:00001:evidence:F-004-visual> a waa:VisualEvidence , waa:Evidence ;
+    dcterms:format "image/png" ;
+    waa:screenshotRegion "640,35,180,26" ;
+    prov:wasDerivedFrom <urn:websight-audit:run:00001:screenshot> .
+

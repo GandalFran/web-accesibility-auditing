@@ -1,0 +1,3 @@
+image_id,url,screenshot_path,timestamp,title,lang,num_images,num_headings
+0,https://www.w3.org/WAI/demos/bad/,data/screenshots/00000_www.w3.org_WAI_demos_bad_.png,2026-01-16T13:41:04.774073,Before and After Demonstration: Overview,en,2,4
+1,https://www.example.com,data/screenshots/00001_www.example.com.png,2026-01-16T13:41:04.539339,Example Domain,en,0,1

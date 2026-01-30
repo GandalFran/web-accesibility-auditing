@@ -1,0 +1,156 @@
+@prefix waa: <https://bisite.usal.es/ontologies/web-accessibility-audit#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix oa: <http://www.w3.org/ns/oa#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+# ============================================================
+# Real Audit Run: Fashion Brand Landing Page
+# Dataset: WebSight v0.2 (HuggingFaceM4) - train:00000
+# Executed: 2024-11-15 14:25:00 UTC
+# ============================================================
+
+# The Audited Web Resource
+<urn:websight-audit:run:00000:resource> a waa:WebResource ;
+    dcterms:identifier "urn:websight:v0.2:train:00000" ;
+    dcterms:title "Fashion Brand Landing Page" ;
+    dcterms:source <https://huggingface.co/datasets/HuggingFaceM4/WebSight> .
+
+# Page State at Audit Time
+<urn:websight-audit:run:00000:pagestate> a waa:PageState ;
+    waa:screenshotHash "sha256:74a93668d60b8f7b6f08666657b2daa2dcfe4e2169d7c579eb34a89cdff90270" ;
+    waa:viewportWidth 1920 ;
+    waa:viewportHeight 1080 ;
+    waa:hydrationTimestamp "2024-11-15T14:25:00Z"^^xsd:dateTime ;
+    waa:renderingEngine "Chromium/120.0.6099.109" .
+
+# Screenshot Entity (Provenance)
+<urn:websight-audit:run:00000:screenshot> a prov:Entity ;
+    dcterms:format "image/png" ;
+    dcterms:identifier "urn:websight:v0.2:train:00000:screenshot" ;
+    prov:wasGeneratedBy <urn:websight-audit:run:00000:capture-activity> ;
+    dcterms:created "2024-11-15T14:24:55Z"^^xsd:dateTime .
+
+# Screenshot Capture Activity
+<urn:websight-audit:run:00000:capture-activity> a prov:Activity ;
+    prov:startedAtTime "2024-11-15T14:24:50Z"^^xsd:dateTime ;
+    prov:endedAtTime "2024-11-15T14:24:55Z"^^xsd:dateTime ;
+    prov:wasAssociatedWith <urn:agent:chromium-headless> .
+
+# Capture Agent
+<urn:agent:chromium-headless> a prov:Agent , prov:SoftwareAgent ;
+    dcterms:title "Chromium Headless Browser" ;
+    dcterms:identifier "Chromium/120.0.6099.109" ;
+    prov:actedOnBehalfOf <urn:agent:wcag-vlm-pipeline> .
+
+# Provenance Bundle for Audit Run
+<urn:websight-audit:run:00000:provenance-bundle> a prov:Entity , prov:Bundle ;
+    dcterms:created "2024-11-15T14:28:00Z"^^xsd:dateTime ;
+    dcterms:description "Provenance metadata for audit run including VLM model version, inference parameters, and execution environment." .
+
+# The Audit Run
+<urn:websight-audit:run:00000> a waa:AuditRun ;
+    dcterms:identifier "AR-000" ;
+    waa:auditedResource <urn:websight-audit:run:00000:resource> ;
+    waa:pageState <urn:websight-audit:run:00000:pagestate> ;
+    waa:runTimestamp "2024-11-15T14:25:00Z"^^xsd:dateTime ;
+    waa:toolchain "WCAG-VLM-v1.0" ;
+    waa:hasProvenanceBundle <urn:websight-audit:run:00000:provenance-bundle> ;
+    waa:hasFinding <urn:websight-audit:run:00000:finding:F-001> ;
+    waa:hasFinding <urn:websight-audit:run:00000:finding:F-002> ;
+    prov:startedAtTime "2024-11-15T14:25:00Z"^^xsd:dateTime ;
+    prov:endedAtTime "2024-11-15T14:28:00Z"^^xsd:dateTime ;
+    prov:wasAssociatedWith <urn:agent:llava-v1.5-7b> .
+
+# VLM Agent
+<urn:agent:llava-v1.5-7b> a prov:Agent , prov:SoftwareAgent ;
+    dcterms:title "LLaVA Vision-Language Model" ;
+    waa:modelName "llava-v1.5-7b-q4" ;
+    waa:modelVersion "1.5.0-quantized-4bit" ;
+    waa:inferenceFramework "llama.cpp" ;
+    waa:quantizationBits 4 .
+
+# WCAG Criterion WCAG2.2:1.4.3
+<urn:wcag:WCAG2.2:1.4.3> a waa:Criterion ;
+    dcterms:identifier "WCAG2.2:1.4.3" ;
+    dcterms:source <https://www.w3.org/WAI/WCAG22/Understanding/1-4-3> ;
+    skos:prefLabel "Contrast (Minimum)"@en .
+
+# Finding F-001
+<urn:websight-audit:run:00000:finding:F-001> a waa:Finding ;
+    dcterms:identifier "F-001" ;
+    waa:criterion <urn:wcag:WCAG2.2:1.4.3> ;
+    waa:target <urn:websight-audit:run:00000:target:F-001> ;
+    waa:status waa:Fail ;
+    waa:confidence 0.86 ;
+    waa:severity "major" ;
+    waa:evidence <urn:websight-audit:run:00000:evidence:F-001-visual> ;
+    waa:evidence <urn:websight-audit:run:00000:evidence:F-001-bbox> ;
+    dcterms:description "Main heading 'Fashion Brand' uses gray text (#6B7280) on light gray background (#F3F4F6), resulting in contrast ratio 2.1:1, below WCAG AA requirement of 4.5:1."@en ;
+    dcterms:created "2024-11-15T14:25:30Z"^^xsd:dateTime .
+
+# Target F-001
+<urn:websight-audit:run:00000:target:F-001> a waa:Target ;
+    waa:domSelector "h1.text-4xl.font-bold" ;
+    waa:visualRegion <urn:websight-audit:run:00000:evidence:F-001-bbox> ;
+    oa:hasSelector [
+        a oa:CssSelector ;
+        rdf:value "h1.text-4xl.font-bold"
+    ] .
+
+# Visual Evidence (Bounding Box)
+<urn:websight-audit:run:00000:evidence:F-001-bbox> a waa:BBoxEvidence , waa:Evidence ;
+    waa:bbox "620,280,680,52" ;
+    oa:hasSource <urn:websight-audit:run:00000:screenshot> ;
+    prov:wasDerivedFrom <urn:websight-audit:run:00000:screenshot> ;
+    dcterms:format "application/x-bbox" .
+
+# Visual Evidence (Screenshot Region)
+<urn:websight-audit:run:00000:evidence:F-001-visual> a waa:VisualEvidence , waa:Evidence ;
+    dcterms:format "image/png" ;
+    waa:screenshotRegion "620,280,680,52" ;
+    prov:wasDerivedFrom <urn:websight-audit:run:00000:screenshot> .
+
+# WCAG Criterion WCAG2.2:1.4.3
+<urn:wcag:WCAG2.2:1.4.3> a waa:Criterion ;
+    dcterms:identifier "WCAG2.2:1.4.3" ;
+    dcterms:source <https://www.w3.org/WAI/WCAG22/Understanding/1-4-3> ;
+    skos:prefLabel "Contrast (Minimum)"@en .
+
+# Finding F-002
+<urn:websight-audit:run:00000:finding:F-002> a waa:Finding ;
+    dcterms:identifier "F-002" ;
+    waa:criterion <urn:wcag:WCAG2.2:1.4.3> ;
+    waa:target <urn:websight-audit:run:00000:target:F-002> ;
+    waa:status waa:Fail ;
+    waa:confidence 0.91 ;
+    waa:severity "major" ;
+    waa:evidence <urn:websight-audit:run:00000:evidence:F-002-visual> ;
+    waa:evidence <urn:websight-audit:run:00000:evidence:F-002-bbox> ;
+    dcterms:description "Body text uses medium gray (#6B7280) on light gray background (#F3F4F6), contrast ratio 2.8:1, insufficient for body text."@en ;
+    dcterms:created "2024-11-15T14:26:15Z"^^xsd:dateTime .
+
+# Target F-002
+<urn:websight-audit:run:00000:target:F-002> a waa:Target ;
+    waa:domSelector "p.text-lg.text-gray-600" ;
+    waa:visualRegion <urn:websight-audit:run:00000:evidence:F-002-bbox> ;
+    oa:hasSelector [
+        a oa:CssSelector ;
+        rdf:value "p.text-lg.text-gray-600"
+    ] .
+
+# Visual Evidence (Bounding Box)
+<urn:websight-audit:run:00000:evidence:F-002-bbox> a waa:BBoxEvidence , waa:Evidence ;
+    waa:bbox "450,360,1020,85" ;
+    oa:hasSource <urn:websight-audit:run:00000:screenshot> ;
+    prov:wasDerivedFrom <urn:websight-audit:run:00000:screenshot> ;
+    dcterms:format "application/x-bbox" .
+
+# Visual Evidence (Screenshot Region)
+<urn:websight-audit:run:00000:evidence:F-002-visual> a waa:VisualEvidence , waa:Evidence ;
+    dcterms:format "image/png" ;
+    waa:screenshotRegion "450,360,1020,85" ;
+    prov:wasDerivedFrom <urn:websight-audit:run:00000:screenshot> .
+

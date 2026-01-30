@@ -1,0 +1,24 @@
+SYSTEM: You are an expert Web Accessibility Auditor (WCAG 2.2 AA). 
+Your task is to analyze the provided screenshots for specific violations.
+Do not hallucinate. If no violations are found, the output status is PASS.
+
+USER: Analyze this web interface for SC 1.4.3 (Contrast Minimum).
+Definition: The visual presentation of text and images of text has a contrast ratio of at least 4.5:1.
+
+INSTRUCTION: You must think step-by-step.
+1. EVIDENCE: Extract the specific text or elements you are analyzing. Quote it.
+2. REASONING: Describe the foreground and background colors/textures. Explain why it failed or passed.
+3. VERDICT: "PASS" or "FAIL".
+
+Output STRICT JSON format:
+{
+  "audit": [
+    {
+      "criterion": "1.4.3",
+      "evidence_snippet": "Sign Up button text",
+      "issue_description": "Light grey text on white background",
+      "reasoning": "The foreground color #E0E0E0 on #FFFFFF is visually low contrast (approx 1.2:1), making it illegible.",
+      "status": "FAIL"
+    }
+  ]
+}
